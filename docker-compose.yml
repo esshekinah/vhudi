@@ -1,0 +1,83 @@
+version: '3.7'
+
+services:
+  vhudi:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: 'vhudi-php'
+    container_name: 'vhudi-php'
+    restart: unless-stopped
+    volumes:
+      - './:/var/www'
+    networks:
+      - dokploy-network
+    environment:
+      APP_NAME: '${APP_NAME}'
+      ENVIRONMENT: '${ENVIRONMENT}'
+      DB_CONNECTION: '${DB_CONNECTION}'
+      DB_HOST: '${DB_HOST}'
+      DB_PORT: '${DB_PORT}'
+      DB_DATABASE: '${DB_DATABASE}'
+      DB_USERNAME: '${DB_USERNAME}'
+      DB_PASSWORD: '${DB_PASSWORD}'
+      USER_LOGO: '${USER_LOGO}'
+      CLIENT_LOGO: '${CLIENT_LOGO}'
+      SYSTEM_LOGO: '${SYSTEM_LOGO}'
+
+  vhudiDB:
+    image: mysql:5.7
+    container_name: 'vhudi-mysql'
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: 'vhudi'
+      MYSQL_ROOT_PASSWORD: '2022'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: '2022'
+    volumes:
+      - /home/vhudi_mysql:/var/lib/mysql
+    networks:
+      - dokploy-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.7
+    depends_on:
+      - vhudiDB
+    container_name: 'vhudi-phpmyadmin'
+    environment:
+      PMA_HOST: vhudiDB
+      PMA_PORT: 3306
+    networks:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`db.vhudi.co.za`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
+      - "traefik.http.routers.phpmyadmin.tls.certResolver=letsencrypt"
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+
+  nginx:
+    image: 'nginx:alpine'
+    container_name: 'vhudi-nginx'
+    restart: unless-stopped
+    volumes:
+    - './:/var/www'
+    - './docker-compose/nginx/default.conf:/etc/nginx/conf.d/default.conf'
+    depends_on:
+      - vhudi
+    networks:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`pos.vhudi.co.za`)"
+      - "traefik.http.routers.nginx.entrypoints=websecure"
+      - "traefik.http.routers.nginx.tls.certResolver=letsencrypt"
+      - "traefik.http.services.nginx.loadbalancer.server.port=80"
+
+volumes:
+  vhudi_mysql:
+  nginx:
+
+networks:
+  dokploy-network:
+    external: true
