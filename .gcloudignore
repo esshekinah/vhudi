@@ -1,0 +1,46 @@
+# This file specifies files that should NOT be uploaded to Google Cloud
+# using `gcloud deploy` and similar commands.
+#
+# If you would like to add files to the ignore list manually, please add them to the
+# .gcloudignore file located at the root of your repository.
+#
+# Files listed in .gitignore are automatically ignored, so there's no need to duplicate
+# entries in this file.
+
+# .git directory
+.git/
+.gitignore
+
+# Node modules (if applicable)
+node_modules/
+
+# Docker files that aren't needed for deployment
+Dockerfile
+docker-compose.yml
+docker-compose/
+
+# Development files
+.env
+.env.local
+*.log
+error_log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git files
+.git/
+.gitattributes
+
+# Docker compose files
+docker-compose*.yml
+
+# Test files (if not needed in production)
+*.test.php
