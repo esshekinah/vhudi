@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vhudi-bg: #1f2a30;
+  --vhudi-accent: #8a6d3b;
+}
+
+body {
+  background: var(--vhudi-bg);
+  color: #e6eef1;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Legacy-style table look (black rows, subtle opacity) */
+.vhudi-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.vhudi-table th {
+  background: #000;
+  color: #fff;
+  text-align: left;
+  padding: 8px;
+  font-weight: 600;
+}
+.vhudi-table td {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.vhudi-input {
+  width: 100%;
+  padding: 6px 8px;
+  background: #10171b;
+  color: #fff;
+  border: 1px solid #33454d;
+  border-radius: 4px;
+}
+.vhudi-btn {
+  display: inline-block;
+  background: var(--vhudi-accent);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+}
+.vhudi-btn:hover {
+  filter: brightness(1.1);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
