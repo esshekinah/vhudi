@@ -1,0 +1,15 @@
+rules_version = '2';
+
+// All data access in this app goes through the server (Next.js Route Handlers /
+// Server Actions) using the Firebase Admin SDK, which bypasses these rules.
+// We therefore lock down all direct client access by default.
+//
+// If you later add client-side Firestore reads, replace the `false` guards with
+// proper `request.auth`-based checks.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
