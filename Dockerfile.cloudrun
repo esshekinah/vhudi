@@ -1,8 +1,9 @@
-FROM php:7.4-fpm
+FROM php:8.2-fpm
 
 # Install nginx and dependencies
-RUN apt-get update && apt-get install -y \
-    nginx git curl libpng-dev libonig-dev libxml2-dev libzip-dev zip unzip locate ghostscript ssmtp supervisor \
+# Using --fix-missing to tolerate transient mirror issues
+RUN apt-get update && apt-get install -y --fix-missing \
+    nginx git curl libpng-dev libonig-dev libxml2-dev libzip-dev zip unzip ghostscript ssmtp supervisor \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Disable OPCache
@@ -18,7 +19,12 @@ RUN echo "upload_max_filesize = 200M" >> /usr/local/etc/php/php.ini \
     && echo "post_max_size = 200M" >> /usr/local/etc/php/php.ini
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd gettext xml intl zip mysqli \
+# gd needs freetype + jpeg flags on PHP 8.x
+RUN apt-get update && apt-get install -y --fix-missing \
+    libfreetype6-dev libjpeg62-turbo-dev libicu-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd gettext xml intl zip mysqli \
     && docker-php-ext-enable mbstring exif pcntl bcmath gd gettext xml intl zip mysqli
 
 # Composer
