@@ -3,9 +3,6 @@ services:
   - type: web
     name: vhudi
     runtime: docker
-    # Render web services must listen on port 10000 by default, but we
-    # override here to match our nginx config which already listens on 8080.
-    # Render will detect the PORT env var and route external traffic to it.
     envVars:
       - key: PORT
         value: 8080
@@ -35,12 +32,18 @@ services:
         value: production
     healthCheckPath: /health.php
 
+  # ─── Cron Job: ping health endpoint every 5 minutes to prevent spin-down ───
+  - type: cron
+    name: vhudi-keepalive
+    runtime: image
+    image:
+      url: curlimages/curl:latest
+    schedule: "*/5 * * * *"
+    command: curl -f -s https://vhudi.onrender.com/health.php
+
   # ─── Managed MySQL Database ────────────────────────────────────────
 databases:
   - name: vhudi-db
     databaseName: vhudi
     user: vhudi_user
-    # Render free tier uses PostgreSQL. For MySQL, choose the "Starter" plan
-    # or higher. If you must use MySQL, select it during dashboard setup;
-    # otherwise migrate to PostgreSQL (see notes below).
     plan: starter
