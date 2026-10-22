@@ -22,6 +22,9 @@ SET time_zone = "+00:00";
 -- Database: `vhudi`
 --
 
+CREATE DATABASE IF NOT EXISTS `vhudi`;
+USE `vhudi`;
+
 -- --------------------------------------------------------
 
 --
