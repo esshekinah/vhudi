@@ -1,0 +1,48 @@
+services:
+  # ─── PHP Web Service ───────────────────────────────────────────────
+  - type: web
+    name: vhudi
+    runtime: docker
+    # Use the existing Cloud-Run-compatible Dockerfile (nginx + php-fpm + supervisord)
+    dockerfilePath: ./Dockerfile.cloudrun
+    # Render web services must listen on port 10000 by default, but we
+    # override here to match our nginx config which already listens on 8080.
+    # Render will detect the PORT env var and route external traffic to it.
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DB_HOST
+        fromDatabase:
+          name: vhudi-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: vhudi-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: vhudi-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: vhudi-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: vhudi-db
+          property: password
+      - key: APP_NAME
+        value: VHUDI
+      - key: ENVIRONMENT
+        value: production
+    healthCheckPath: /health.php
+
+  # ─── Managed MySQL Database ────────────────────────────────────────
+databases:
+  - name: vhudi-db
+    databaseName: vhudi
+    user: vhudi_user
+    # Render free tier uses PostgreSQL. For MySQL, choose the "Starter" plan
+    # or higher. If you must use MySQL, select it during dashboard setup;
+    # otherwise migrate to PostgreSQL (see notes below).
+    plan: starter
