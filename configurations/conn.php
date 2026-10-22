@@ -2,7 +2,7 @@
 
 // TiDB Cloud connection (MySQL-compatible)
 $server_name    = 'gateway01.eu-central-1.prod.aws.tidbcloud.com';
-$db_name        = 'sys';
+$db_name        = 'vhudi';
 $mysql_username = '4EYWK1MFUyxNbX3.root';
 $mysql_password = 'd9m58ZUzRnLgubxM';
 $db_port        = 4000;
