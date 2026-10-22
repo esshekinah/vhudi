@@ -7,17 +7,21 @@ $mysql_username = getenv('DB_USERNAME') ?: 'user';
 $mysql_password = getenv('DB_PASSWORD') ?: '2022';
 $db_port        = (int)(getenv('DB_PORT') ?: 3306);
 
-$conn = mysqli_connect($server_name, $mysql_username, $mysql_password, $db_name, $db_port);
+$ca_cert = __DIR__ . '/aiven-ca.pem';
 
-// PlanetScale (and most cloud MySQL providers) require SSL
-if ($conn && getenv('DB_SSL') === 'true') {
-    mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+// mysqli_ssl_set must be called before mysqli_real_connect when using SSL
+$conn = mysqli_init();
+if (file_exists($ca_cert)) {
+    // Verify server identity using Aiven's CA certificate
+    mysqli_ssl_set($conn, NULL, NULL, $ca_cert, NULL, NULL);
+    mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 }
+mysqli_real_connect($conn, $server_name, $mysql_username, $mysql_password, $db_name, $db_port);
 
-if ($conn) {
-    ini_set('memory_limit', '-1');
-} else {
+if (mysqli_connect_errno()) {
     echo "Database connection fail: " . mysqli_connect_error();
+} else {
+    ini_set('memory_limit', '-1');
 }
 
 ?>
