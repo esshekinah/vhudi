@@ -3,8 +3,6 @@ services:
   - type: web
     name: vhudi
     runtime: docker
-    # Use the existing Cloud-Run-compatible Dockerfile (nginx + php-fpm + supervisord)
-    dockerfilePath: ./Dockerfile.cloudrun
     # Render web services must listen on port 10000 by default, but we
     # override here to match our nginx config which already listens on 8080.
     # Render will detect the PORT env var and route external traffic to it.
