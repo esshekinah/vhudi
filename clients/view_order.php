@@ -117,7 +117,7 @@ background: brown;
 
 
 		function get_total_transaction($order){
-			require "conn.php";
+			global $conn;
 		 $sql = "SELECT * FROM `transaction` WHERE `order_id`='".$order."'";
  // OR `Item_No`'".$left."'
 				$res = mysqli_query($conn,$sql);
@@ -134,7 +134,7 @@ background: brown;
 					return $total;
 		}
 		function get_doctor($pk){
-			require "conn.php";
+			global $conn;
 		 $sql = "SELECT * FROM `doctors` WHERE `pk`='".$pk."'";
 
 				$res = mysqli_query($conn,$sql);
@@ -152,7 +152,7 @@ background: brown;
 
 
 				function get_total_cost($db_order){
-			require "conn.php";
+			global $conn;
 		 $sql = "SELECT * FROM `prescription` WHERE `db_order`='".$db_order."'";
  // OR `Item_No`'".$left."'
 				$res = mysqli_query($conn,$sql);

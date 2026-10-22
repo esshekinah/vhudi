@@ -314,7 +314,7 @@ echo '
 						 ';
 						 
   function order($order){
-		require "conn.php";
+		global $conn;
 		 $sql = "SELECT * FROM `prescription` WHERE `db_order`='".$order."'";
 
 				$res = mysqli_query($conn,$sql);
@@ -332,7 +332,7 @@ echo '
 
 	}
   function get_count(){
-    require "conn.php";
+    global $conn;
      $sql = "SELECT * FROM `prescription` ORDER BY `myCount` DESC LIMIT 1";
 
         $res = mysqli_query($conn,$sql);
@@ -351,7 +351,7 @@ echo '
   }
 
 	function lens_price($ltype){
-		require "conn.php";
+		global $conn;
 		 $sql = "SELECT * FROM `price` WHERE `Item_No`='".$ltype."'";
 
 				$res = mysqli_query($conn,$sql);
@@ -369,7 +369,7 @@ echo '
 
 	}
 	function lens_price2($ltype){
-		require "conn.php";
+		global $conn;
 		 $sql = "SELECT * FROM `price` WHERE `Item_No`='".$ltype."'";
 
 				$res = mysqli_query($conn,$sql);

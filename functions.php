@@ -1,7 +1,7 @@
 <?php
 
 function get_patient($id){
-  require "conn.php";
+  global $conn;
   $sql = "SELECT * FROM `doctors` WHERE `pk`='".$id."'";
 $res = mysqli_query($conn,$sql);
 
